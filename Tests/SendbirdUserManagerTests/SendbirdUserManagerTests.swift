@@ -14,11 +14,11 @@ import XCTest
 //    }
 //}
 //
-//final class UserStorageTests: UserStorageBaseTests {
-//    override func userStorage() -> SBUserStorage? {
-//        MockUserStorage()
-//    }
-//}
+final class UserStorageTests: UserStorageBaseTests {
+    override func userStorage() -> SBUserStorage? {
+        return SBMemoryStorage()
+    }
+}
 //
 //final class NetworkClientTests: NetworkClientBaseTests {
 //    override func networkClient() -> SBNetworkClient? {

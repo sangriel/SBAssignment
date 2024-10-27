@@ -12,7 +12,9 @@ import XCTest
 /// 사용을 위해서는 해당 클래스를 상속받고,
 /// `open func userStorage() -> SBUserStorage?`를 override한뒤, 본인이 구현한 SBUserStorage의 인스턴스를 반환하도록 합니다.
 open class UserStorageBaseTests: XCTestCase {
-    open func userStorage() -> SBUserStorage? { nil }
+    open func userStorage() -> SBUserStorage? {
+        return SBMemoryStorage()
+    }
     
     public func testSetUser() throws {
         let storage = try XCTUnwrap(self.userStorage())
