@@ -19,11 +19,24 @@ class SBUserManagerImp : SBUserManager {
     }
     
     func initApplication(applicationId: String, apiToken: String) {
-        
+        let oldAppId = AppData.appId
+        if oldAppId != applicationId {
+            //TODO: - remove all data
+        }
+        AppData.appId = applicationId
+        AppData.apiToken = apiToken
     }
     
     func createUser(params: UserCreationParams, completionHandler: ((UserResult) -> Void)?) {
-        
+        let createUserRequest = CreateUserRequest(usercreationParam: params)
+        SBBaseNetworkManager().request(request: createUserRequest) { result in
+            switch result {
+            case .success(let response):
+                break
+            case .failure(let error):
+                break
+            }
+        }
     }
     
     func createUsers(params: [UserCreationParams], completionHandler: ((UsersResult) -> Void)?) {

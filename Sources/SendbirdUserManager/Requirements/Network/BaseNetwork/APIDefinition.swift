@@ -9,12 +9,27 @@ import Foundation
 
 public protocol Request {
     associatedtype Response : Decodable
+    var urlPath: String { get }
+    var method: SBHttpMethod { get }
+    var parameters: [String:Any]? { get }
+    var timeoutInterval: Double { get }
+    var headers: [String:String] { get }
+}
+extension Request {
+    var timeoutInterval: Double {
+        return 10
+    }
+    
+    var headers: [String : String] {
+        return ["Api-Token" : AppData.apiToken,
+                "Content-Type" : "application/json",
+                "Accept" : "application/json"]
+    }
 }
 
 public enum SBNetworkError : Error {
     case invalidUrl
     case emptyResponse
-    
 }
 
 public enum SBHttpMethod : String {
@@ -31,13 +46,3 @@ public protocol SBNetworkClient {
         completionHandler: @escaping (Result<R.Response, Error>) -> Void
     )
 }
-
-public protocol SBAPIDefinition : SBNetworkClient {
-    var baseUrl: String { get }
-    var urlPath: String { get }
-    var method: SBHttpMethod { get }
-    var parameters: [String:Any]? { get }
-    var timeoutInterval: Double { get }
-    var headers: [String:String] { get }
-}
-
