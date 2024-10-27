@@ -84,7 +84,7 @@ extension SBBaseNetworkManager {
         let task = session.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
                 defer {
-                    SBNetworkSchedular.shared.executeTask()
+                    SBNetworkSchedular.shared.signalSemaphore()
                 }
                 if let error = error {
                     completionHandler(.failure(error))
