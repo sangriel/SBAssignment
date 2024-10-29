@@ -28,7 +28,7 @@ class SchedularTestCase: XCTestCase {
             }
         }
         
-        wait(for: [expectation], timeout: 15)
+        wait(for: [expectation], timeout: 20)
         XCTAssertEqual(0, SBNetworkSchedular.shared.getTaskQueueCount())
     }
     

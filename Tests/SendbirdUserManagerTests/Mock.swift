@@ -63,8 +63,6 @@ class MockUrlSessionDataTask : URLSessionDataTask {
         }
         
         let httpMethod = request.httpMethod ?? ""
-        print("path \(path)")
-        print("method \(httpMethod)")
         
         switch path {
         case "/v3/users":
@@ -136,7 +134,6 @@ class MockUrlSessionDataTask : URLSessionDataTask {
 }
 
 class MockUrlSession : URLSession {
-   
     override func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, (any Error)?) -> Void) -> URLSessionDataTask {
         return MockUrlSessionDataTask(request: request, completionHandler: completionHandler)
     }

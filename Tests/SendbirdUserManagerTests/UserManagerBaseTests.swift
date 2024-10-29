@@ -14,7 +14,7 @@ import XCTest
 /// `open func userManager() -> SBUserManager?`를 override한뒤, 본인이 구현한 SBUserManager의 인스턴스를 반환하도록 합니다.
 open class UserManagerBaseTests: XCTestCase {
     open func userManager() -> SBUserManager? {
-        return SBUserManagerImp()
+        return SBUserManagerImp(networkClient: SBBaseNetworkManager(session: MockUrlSession()))
     }
     
     public let applicationId = "DEE4833A-1FBB-46D5-ABDE-D429AF9FCCE0"   // Note: add an application ID

@@ -30,6 +30,7 @@ class SBUserManagerImp : SBUserManager {
     
     func createUser(params: UserCreationParams, completionHandler: ((UserResult) -> Void)?) {
         let createUserRequest = CreateUserRequest(usercreationParam: params)
+        let dispatchGroup = DispatchGroup()
         networkClient.request(request: createUserRequest) { [weak self] result in
             switch result {
             case .success(let response):
@@ -60,7 +61,7 @@ class SBUserManagerImp : SBUserManager {
                 dispatchGroup.leave()
             }
         }
-        
+
         dispatchGroup.wait()
         
         for result in results {

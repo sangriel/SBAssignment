@@ -73,34 +73,31 @@ class SBBaseNetworkManager : SBNetworkClient   {
             urlRequest.addValue(value, forHTTPHeaderField: key)
         }
         
-//        let sessionConfig = URLSessionConfiguration.default
-//        
-//        let session = URLSession(configuration: sessionConfig)
-//        session.configuration = sessionConfig
+        //        let sessionConfig = URLSessionConfiguration.default
+        //
+        //        let session = URLSession(configuration: sessionConfig)
+        //        session.configuration = sessionConfig
         let task = session.dataTask(with: urlRequest) { [weak self] data, response, error in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                defer {
-                    SBNetworkSchedular.shared.signalSemaphore()
-                }
-                if let error = error {
-                    completionHandler(.failure(error))
-                    return
-                }
-                
-                guard let data = data else {
-                    completionHandler(.failure(SBNetworkError.emptyResponse))
-                    return
-                }
-                
-                do {
-                    let decoder = JSONDecoder()
-                    let result = try decoder.decode(R.Response.self, from: data)
-                    completionHandler(.success(result))
-                }
-                catch(let error) {
-                    completionHandler(.failure(error))
-                }
+            defer {
+                SBNetworkSchedular.shared.signalSemaphore()
+            }
+            if let error = error {
+                completionHandler(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completionHandler(.failure(SBNetworkError.emptyResponse))
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                let result = try decoder.decode(R.Response.self, from: data)
+                completionHandler(.success(result))
+            }
+            catch(let error) {
+                completionHandler(.failure(error))
             }
         }
         SBNetworkSchedular.shared.appendTask(task)
