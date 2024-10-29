@@ -14,6 +14,16 @@ struct MockResponse : Decodable {
     var requestedDate : Date
 }
 struct MockRequest: Request {
+    var urlPath: String {
+        return ""
+    }
+    
+    var method: SBHttpMethod {
+        return .POST
+    }
+    
+    var parameters: [String : Any]?
+    
     typealias Response = MockResponse
     let response : Response
     
