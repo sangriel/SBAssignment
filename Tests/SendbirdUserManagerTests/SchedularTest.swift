@@ -9,6 +9,7 @@ import Foundation
 import XCTest
 @testable import SendbirdUserManager
 
+<<<<<<< HEAD
 struct MockResponse : Decodable {
     var identifier : Int
     var requestedDate : Date
@@ -119,12 +120,23 @@ class MockSchedular : Schedular {
 class SchedularTestCase: XCTestCase {
     
     let mockRequestClient = MockRequestClient()
+=======
+
+class SchedularTestCase: XCTestCase {
+    
+    let mockRequestClient = SBBaseNetworkManager(session: MockUrlSession())
+>>>>>>> feature/network
     
     func test큐에_있는_테스크_전부_소진_테스트() {
         var count : Int = 0
         let expectation = self.expectation(description: "wait for all tasks")
         for i in 0..<10 {
+<<<<<<< HEAD
             mockRequestClient.request(request: MockRequest(response: .init(identifier: i, requestedDate: Date()))) { result
+=======
+            let request = MockSchedularTestAPI()
+            mockRequestClient.request(request: request) { result
+>>>>>>> feature/network
                 in
                 count += 1
                 if count == 9 {
@@ -133,8 +145,13 @@ class SchedularTestCase: XCTestCase {
             }
         }
         
+<<<<<<< HEAD
         wait(for: [expectation], timeout: 15)
         XCTAssertEqual(0, MockSchedular.shared.taskQueue.count)
+=======
+        wait(for: [expectation], timeout: 20)
+        XCTAssertEqual(0, SBNetworkSchedular.shared.getTaskQueueCount())
+>>>>>>> feature/network
     }
     
     func testAPI가_1초_이상마다_호출되는_테스트() {
@@ -143,16 +160,29 @@ class SchedularTestCase: XCTestCase {
         
         var lastRequestDate : Date?
         for i in 0..<10 {
+<<<<<<< HEAD
             mockRequestClient.request(request: MockRequest(response: .init(identifier: i, requestedDate: Date()))) { result in
+=======
+            let request = MockSchedularTestAPI()
+            mockRequestClient.request(request: request) { result in
+>>>>>>> feature/network
                 switch result {
                 case .success(let response):
                     if let lastRequestDate = lastRequestDate {
                         let lastRequestDateSeconds = lastRequestDate.timeIntervalSince1970
+<<<<<<< HEAD
                         let currentRequestDateSeconds = response.requestedDate.timeIntervalSince1970
                         let diff = currentRequestDateSeconds - lastRequestDateSeconds
                         XCTAssertTrue(diff > 1, "api requested too fast \(diff)")
                     }
                     lastRequestDate = response.requestedDate
+=======
+                        let currentRequestDateSeconds = response.requestedDate
+                        let diff = currentRequestDateSeconds - lastRequestDateSeconds
+                        XCTAssertTrue(diff > 1, "api requested too fast \(diff)")
+                    }
+                    lastRequestDate = Date(timeIntervalSince1970: response.requestedDate)
+>>>>>>> feature/network
                 case .failure(_):
                     break
                 }

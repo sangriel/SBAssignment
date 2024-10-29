@@ -7,15 +7,18 @@
 
 import Foundation
 import XCTest
+@testable import SendbirdUserManager
 
 /// Unit Testing을 위해 제공되는 base test suite입니다.
 /// 사용을 위해서는 해당 클래스를 상속받고,
 /// `open func userManager() -> SBUserManager?`를 override한뒤, 본인이 구현한 SBUserManager의 인스턴스를 반환하도록 합니다.
 open class UserManagerBaseTests: XCTestCase {
-    open func userManager() -> SBUserManager? { nil }
+    open func userManager() -> SBUserManager? {
+        return SBUserManagerImp(networkClient: SBBaseNetworkManager(session: MockUrlSession()))
+    }
     
-    public let applicationId = ""   // Note: add an application ID
-    public let apiToken = ""        // Note: add an API Token
+    public let applicationId = "DEE4833A-1FBB-46D5-ABDE-D429AF9FCCE0"   // Note: add an application ID
+    public let apiToken = "977131ed68283a22d1fcb28859dbb69e65bdbf59"        // Note: add an API Token
     
     public func testInitApplicationWithDifferentAppIdClearsData() throws {
         let userManager = try XCTUnwrap(self.userManager())
@@ -27,6 +30,7 @@ open class UserManagerBaseTests: XCTestCase {
         let initialUser = UserCreationParams(userId: userId, nickname: "hello", profileURL: nil)
         userManager.createUser(params: initialUser) { _ in }
         
+        sleep(2)
         // Check if the data exist
         let users = userManager.userStorage.getUsers()
         XCTAssertEqual(users.count, 1, "User should exist with an initial Application ID")
