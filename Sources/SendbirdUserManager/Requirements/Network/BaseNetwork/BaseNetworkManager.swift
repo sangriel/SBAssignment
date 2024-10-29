@@ -9,6 +9,12 @@ import Foundation
 
 
 class SBBaseNetworkManager : SBNetworkClient   {
+    var session: URLSession
+    
+    init(session : URLSession = .shared){
+        self.session = session
+    }
+    
     var baseUrl: String {
         return "https://api-\(AppData.appId).sendbird.com"
     }
@@ -67,9 +73,10 @@ class SBBaseNetworkManager : SBNetworkClient   {
             urlRequest.addValue(value, forHTTPHeaderField: key)
         }
         
-        let sessionConfig = URLSessionConfiguration.default
-        
-        let session = URLSession(configuration: sessionConfig)
+//        let sessionConfig = URLSessionConfiguration.default
+//        
+//        let session = URLSession(configuration: sessionConfig)
+//        session.configuration = sessionConfig
         let task = session.dataTask(with: urlRequest) { [weak self] data, response, error in
             guard let self = self else { return }
             DispatchQueue.main.async {

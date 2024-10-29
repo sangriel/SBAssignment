@@ -26,6 +26,10 @@ final class SBNetworkSchedular : Schedular {
         }
     }
     
+    func getTaskQueueCount() -> Int {
+        return taskQueue.count
+    }
+    
     func signalSemaphore() {
         semaphore.signal()
     }

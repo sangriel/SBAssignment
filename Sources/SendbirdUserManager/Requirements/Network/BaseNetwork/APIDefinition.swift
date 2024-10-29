@@ -49,6 +49,8 @@ public enum SBHttpMethod : String {
 }
 
 public protocol SBNetworkClient {
+    
+    var session : URLSession { get }
     /// 리퀘스트를 요청하고 리퀘스트에 대한 응답을 받아서 전달합니다
     func request<R: Request>(
         request: R,
