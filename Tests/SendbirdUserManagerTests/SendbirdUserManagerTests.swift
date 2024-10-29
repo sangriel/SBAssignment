@@ -10,15 +10,6 @@ import XCTest
 
 //final class UserManagerTests: UserManagerBaseTests {
 //    override func userManager() -> SBUserManager {
-<<<<<<< HEAD
-//        MockUserManager()
-//    }
-//}
-//
-//final class UserStorageTests: UserStorageBaseTests {
-//    override func userStorage() -> SBUserStorage? {
-//        MockUserStorage()
-=======
 //        SBUserManagerImp()
 //    }
 //}
@@ -26,7 +17,6 @@ import XCTest
 //final class UserStorageTests: UserStorageBaseTests {
 //    override func userStorage() -> SBUserStorage? {
 //        return SBMemoryStorage()
->>>>>>> feature/network
 //    }
 //}
 //
