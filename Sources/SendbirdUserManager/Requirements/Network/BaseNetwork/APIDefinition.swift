@@ -9,8 +9,6 @@ import Foundation
 
 public protocol Request {
     associatedtype Response : Decodable
-<<<<<<< HEAD
-=======
     var urlPath: String { get }
     var method: SBHttpMethod { get }
     var parameters: [String:Any]? { get }
@@ -27,15 +25,12 @@ extension Request {
                 "Content-Type" : "application/json",
                 "Accept" : "application/json"]
     }
->>>>>>> feature/network
 }
 
 public enum SBNetworkError : Error {
     case invalidUrl
     case emptyResponse
     
-<<<<<<< HEAD
-=======
     var localizedDescription: String {
         switch self {
         case .invalidUrl:
@@ -44,7 +39,6 @@ public enum SBNetworkError : Error {
             return "Empty Response"
         }
     }
->>>>>>> feature/network
 }
 
 public enum SBHttpMethod : String {
@@ -55,27 +49,13 @@ public enum SBHttpMethod : String {
 }
 
 public protocol SBNetworkClient {
-<<<<<<< HEAD
-=======
-    
+   
     var session : URLSession { get }
->>>>>>> feature/network
     /// 리퀘스트를 요청하고 리퀘스트에 대한 응답을 받아서 전달합니다
     func request<R: Request>(
         request: R,
         completionHandler: @escaping (Result<R.Response, Error>) -> Void
     )
 }
-<<<<<<< HEAD
 
-public protocol SBAPIDefinition : SBNetworkClient {
-    var baseUrl: String { get }
-    var urlPath: String { get }
-    var method: SBHttpMethod { get }
-    var parameters: [String:Any]? { get }
-    var timeoutInterval: Double { get }
-    var headers: [String:String] { get }
-}
 
-=======
->>>>>>> feature/network
