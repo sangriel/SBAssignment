@@ -37,4 +37,41 @@ class NetworkResponseTest : XCTestCase {
         
         wait(for: [expectation],timeout: 2)
     }
+    
+    func testGetUserAPI() {
+        AppData.apiToken = apiToken
+        AppData.appId = applicationId
+        let expectation = expectation(description: "get user api test")
+        let request = GetUserAPI(userId: "test1")
+        networkClient.request(request: request) { result  in
+            switch result {
+            case .success(let response):
+                dump(response)
+            case .failure(let error):
+                dump(error)
+            }
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation],timeout: 2)
+    }
+    
+    
+    func testGetUserListAPI() {
+        AppData.apiToken = apiToken
+        AppData.appId = applicationId
+        let expectation = expectation(description: "get user list api test")
+        let request = GetUserListAPI(nickname: "test1")
+        networkClient.request(request: request) { result  in
+            switch result {
+            case .success(let response):
+                dump(response)
+            case .failure(let error):
+                dump(error)
+            }
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation],timeout: 2)
+    }
 }

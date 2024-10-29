@@ -8,7 +8,7 @@
 import Foundation
 
 struct ModelTransformer {
-    static func createUserApiResponseToSBUser(_ user: UserResponse) -> SBUser {
+    static func userApiResponseToSBUser(_ user: UserResponse) -> SBUser {
         return .init(userId: user.userId, nickname: user.nickname, profileURL: user.profileUrl)
     }
     

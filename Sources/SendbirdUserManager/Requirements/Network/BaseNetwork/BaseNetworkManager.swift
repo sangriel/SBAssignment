@@ -73,10 +73,6 @@ class SBBaseNetworkManager : SBNetworkClient   {
             urlRequest.addValue(value, forHTTPHeaderField: key)
         }
         
-        //        let sessionConfig = URLSessionConfiguration.default
-        //
-        //        let session = URLSession(configuration: sessionConfig)
-        //        session.configuration = sessionConfig
         let task = session.dataTask(with: urlRequest) { [weak self] data, response, error in
             defer {
                 SBNetworkSchedular.shared.signalSemaphore()
@@ -90,6 +86,7 @@ class SBBaseNetworkManager : SBNetworkClient   {
                 completionHandler(.failure(SBNetworkError.emptyResponse))
                 return
             }
+            print("\(String(data : data, encoding: .utf8) ?? "")")
             
             do {
                 let decoder = JSONDecoder()

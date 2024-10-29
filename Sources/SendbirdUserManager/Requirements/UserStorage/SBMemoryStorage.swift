@@ -14,7 +14,6 @@ class SBMemoryStorage : SBUserStorage {
     private var customQueue = DispatchQueue(label: "com.sendbird.user.memory.storage",qos: .background)
     
     func upsertUser(_ user: SBUser) {
-        
         if let targetUserIndex = users.value.firstIndex(where: { $0.userId == user.userId }) {
             users.mutate { item in
                 item.remove(at: targetUserIndex)

@@ -30,6 +30,7 @@ open class UserManagerBaseTests: XCTestCase {
         let initialUser = UserCreationParams(userId: userId, nickname: "hello", profileURL: nil)
         userManager.createUser(params: initialUser) { _ in }
         
+        sleep(2)
         // Check if the data exist
         let users = userManager.userStorage.getUsers()
         XCTAssertEqual(users.count, 1, "User should exist with an initial Application ID")

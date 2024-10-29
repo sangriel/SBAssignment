@@ -30,11 +30,10 @@ class SBUserManagerImp : SBUserManager {
     
     func createUser(params: UserCreationParams, completionHandler: ((UserResult) -> Void)?) {
         let createUserRequest = CreateUserRequest(usercreationParam: params)
-        let dispatchGroup = DispatchGroup()
         networkClient.request(request: createUserRequest) { [weak self] result in
             switch result {
             case .success(let response):
-                let sbUser = ModelTransformer.createUserApiResponseToSBUser(response)
+                let sbUser = ModelTransformer.userApiResponseToSBUser(response)
                 self?.upsertUsersAtStorage(users: [sbUser])
                 completionHandler?(.success(sbUser))
             case .failure(let error):
@@ -67,7 +66,7 @@ class SBUserManagerImp : SBUserManager {
         for result in results {
             switch result.0 {
             case .success(let response):
-                let sbUser = ModelTransformer.createUserApiResponseToSBUser(response)
+                let sbUser = ModelTransformer.userApiResponseToSBUser(response)
                 successedUser.append(sbUser)
                 self.upsertUsersAtStorage(users: [sbUser])
             case .failure(let error):
@@ -89,11 +88,43 @@ class SBUserManagerImp : SBUserManager {
     }
     
     func getUser(userId: String, completionHandler: ((UserResult) -> Void)?) {
-        
+        if let cached = userStorage.getUser(for: userId) {
+            completionHandler?(.success(cached))
+        }
+        else {
+            let getUserRequest = GetUserAPI(userId: userId)
+            networkClient.request(request: getUserRequest) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let response):
+                    let sbUser = ModelTransformer.userApiResponseToSBUser(response)
+                    self.upsertUsersAtStorage(users: [sbUser])
+                    completionHandler?(.success(sbUser))
+                case .failure(let error):
+                    completionHandler?(.failure(error))
+                }
+            }
+        }
     }
     
     func getUsers(nicknameMatches: String, completionHandler: ((UsersResult) -> Void)?) {
-        
+        let cached = userStorage.getUsers(for: nicknameMatches)
+        if cached.isEmpty == false {
+            completionHandler?(.success(cached))
+        }
+        else {
+            let getUserListRequest = GetUserListAPI(nickname: nicknameMatches)
+            networkClient.request(request: getUserListRequest) { [weak self] result in
+                switch result {
+                case .success(let response):
+                    let sbUsers = response.users.map{ ModelTransformer.userApiResponseToSBUser($0) }
+                    self?.upsertUsersAtStorage(users: sbUsers)
+                    completionHandler?(.success(sbUsers))
+                case .failure(let error):
+                    completionHandler?(.failure(error))
+                }
+            }
+        }
     }
 }
 extension SBUserManagerImp {

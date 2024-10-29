@@ -73,8 +73,8 @@ class MockUrlSessionDataTask : URLSessionDataTask {
                 break
             case "PUT"://,upsertUser
                 break
-            case "GET": //getUser
-                break
+            case "GET": //getUser, getUsers
+                parseGetUser()
             default:
                 break
             }
@@ -83,10 +83,7 @@ class MockUrlSessionDataTask : URLSessionDataTask {
         default:
             break
         }
-        
-        
     }
-    
     
     private func mockCreatUserAPI() {
         let decoder = JSONDecoder()
@@ -130,6 +127,82 @@ class MockUrlSessionDataTask : URLSessionDataTask {
         catch(let error) {
             completionHandler?(nil,nil,error)
         }
+    }
+    
+    private func parseGetUser() {
+        if let userId = extractUserIdFromPath() {// userId를 통한 단일 getUser
+            mockGetUserAPI(userId: userId)
+        }
+        else if let queryParam = queryParameters(from: request) { //nickname을 통한 getListUser
+           
+        }
+    }
+    
+    private func mockGetUserAPI(userId : String) {
+        let response = ["user_id" : userId,
+                        "nickname" : UUID().uuidString,
+                        "profile_url": UUID().uuidString ]
+        
+        var responseData : Data?
+        if let jsonData = try? JSONEncoder().encode(response) {
+            responseData = jsonData
+        }
+        
+        let rand = UInt32.random(in: 500_000...1000_000)
+        usleep(rand)
+        completionHandler?(responseData, nil, nil)
+    }
+    
+    private func mockGetUserListAPI() {
+        if let queryDict = queryParameters(from: request), let nickname = queryDict["nickname"] {
+          
+            let response = ["users" : ["user_id" : UUID().uuidString,
+                                       "nickname" : nickname,
+                                       "profile_url": UUID().uuidString ]]
+            
+            var responseData : Data?
+            if let jsonData = try? JSONEncoder().encode(response) {
+                responseData = jsonData
+            }
+            
+            let rand = UInt32.random(in: 500_000...1000_000)
+            usleep(rand)
+            completionHandler?(responseData, nil, nil)
+        }
+    }
+    
+    private func queryParameters(from urlRequest: URLRequest) -> [String: String]? {
+        guard let url = urlRequest.url,
+              let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let queryItems = components.queryItems else {
+            return nil
+        }
+        
+        var parameters: [String: String] = [:]
+        for item in queryItems {
+            parameters[item.name] = item.value
+        }
+        return parameters
+    }
+    
+    private func extractUserIdFromPath() -> String? {
+        guard let url = request.url else {
+            return nil
+        }
+        let path = url.path()
+        let pattern = "/v3/users/(\\w+)"
+        do {
+            let regex = try NSRegularExpression(pattern: pattern)
+            let results = regex.matches(in: path, range: NSRange(path.startIndex..., in: path))
+            
+            if let match = results.first,
+               let range = Range(match.range(at: 1), in: path) {
+                return String(path[range])
+            }
+        } catch(let error) {
+            print("\(error)")
+        }
+        return nil
     }
 }
 
