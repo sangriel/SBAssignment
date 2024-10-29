@@ -7,6 +7,7 @@
 
 import Foundation
 import XCTest
+@testable import SendbirdUserManager
 
 /// Unit Testing을 위해 제공되는 base test suite입니다.
 /// 사용을 위해서는 해당 클래스를 상속받고,

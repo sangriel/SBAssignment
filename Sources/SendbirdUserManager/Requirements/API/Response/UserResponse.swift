@@ -18,8 +18,4 @@ struct UserResponse : Decodable {
         case nickname = "nickname"
         case profileUrl = "profile_url"
     }
-    
-    func toSBUser() -> SBUser {
-        return .init(userId: userId, nickname: nickname, profileURL: profileUrl)
-    }
 }

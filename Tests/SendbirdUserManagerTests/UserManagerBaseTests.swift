@@ -7,6 +7,27 @@
 
 import Foundation
 import XCTest
+@testable import SendbirdUserManager
+
+
+class MockUrlSession : URLSession {
+    var data: Data?
+    var error: Error?
+    
+    override func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
+        let task = MockUrlSessionDataTask()
+        task.completionHandler = completionHandler
+        return task
+    }
+}
+
+class MockUrlSessionDataTask : URLSessionDataTask {
+    var completionHandler: ((Data?, URLResponse?, Error?) -> Void)?
+    
+    override func resume() {
+        completionHandler?(nil, nil, nil)
+    }
+}
 
 /// Unit Testing을 위해 제공되는 base test suite입니다.
 /// 사용을 위해서는 해당 클래스를 상속받고,
