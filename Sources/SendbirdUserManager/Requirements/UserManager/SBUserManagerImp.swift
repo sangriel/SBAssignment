@@ -30,12 +30,14 @@ class SBUserManagerImp : SBUserManager {
     
     func createUser(params: UserCreationParams, completionHandler: ((UserResult) -> Void)?) {
         let createUserRequest = CreateUserRequest(usercreationParam: params)
-        networkClient.request(request: createUserRequest) { result in
+        networkClient.request(request: createUserRequest) { [weak self] result in
             switch result {
             case .success(let response):
-                break
+                let sbUser = response.toSBUser()
+                self?.upsertUsersAtStorage(users: [sbUser])
+                completionHandler?(.success(sbUser))
             case .failure(let error):
-                break
+                completionHandler?(.failure(error))
             }
         }
     }
@@ -54,5 +56,12 @@ class SBUserManagerImp : SBUserManager {
     
     func getUsers(nicknameMatches: String, completionHandler: ((UsersResult) -> Void)?) {
         
+    }
+}
+extension SBUserManagerImp {
+    private func upsertUsersAtStorage(users : [SBUser]) {
+        for user in users {
+            userStorage.upsertUser(user)
+        }
     }
 }
