@@ -20,6 +20,18 @@ struct MockUserCreateParam : Decodable {
     }
 }
 
+struct MockUserUpdateParam : Decodable {
+    var userId : String
+    var nickname : String?
+    var profileUrl : String?
+    
+    enum CodingKeys: String, CodingKey {
+        case userId = "user_id"
+        case nickname = "nickname"
+        case profileUrl = "profile_url"
+    }
+}
+
 struct MockSchedularTestResponse : Decodable {
     var requestedDate : Double
 }
@@ -63,26 +75,36 @@ class MockUrlSessionDataTask : URLSessionDataTask {
         }
         
         let httpMethod = request.httpMethod ?? ""
-        
-        switch path {
-        case "/v3/users":
-            switch httpMethod {
-            case "POST": //createUser
-                mockCreatUserAPI()
-            case "DELETE":
-                break
-            case "PUT"://,upsertUser
-                break
-            case "GET": //getUser, getUsers
-                parseGetUser()
+       
+        if path.contains("/v3/users") {
+            if path == "/v3/users" {
+                switch httpMethod {
+                case "POST": //createUser
+                    mockCreatUserAPI()
+                default:
+                    break
+                }
+            }
+            else {
+                switch httpMethod {
+                case "PUT":
+                    mockPutUserAPI()
+                case "GET":
+                    parseGetUser()
+                default:
+                    break
+                }
+            }
+        }
+        else {
+            switch path {
+            case "/test/schedular":
+                mockSchedularAPI()
             default:
                 break
             }
-        case "/test/schedular":
-            mockSchedularAPI()
-        default:
-            break
         }
+        
     }
     
     private func mockCreatUserAPI() {
@@ -128,6 +150,32 @@ class MockUrlSessionDataTask : URLSessionDataTask {
             completionHandler?(nil,nil,error)
         }
     }
+    
+    private func mockPutUserAPI() {
+        if let userId = extractUserIdFromPath() {// userId를 통한 단일 getUser
+            let decoder = JSONDecoder()
+            do {
+                let body = try decoder.decode(MockUserUpdateParam.self, from: request.httpBody!)
+                
+                let response = ["user_id" : body.userId,
+                                "nickname" : body.nickname,
+                                "profile_url": body.profileUrl ]
+                
+                var responseData : Data?
+                if let jsonData = try? JSONEncoder().encode(response) {
+                    responseData = jsonData
+                }
+                
+                let rand = UInt32.random(in: 500_000...1000_000)
+                usleep(rand)
+                completionHandler?(responseData, nil, nil)
+            }
+            catch(let error) {
+                completionHandler?(nil,nil,error)
+            }
+        }
+    }
+    
     
     private func parseGetUser() {
         if let userId = extractUserIdFromPath() {// userId를 통한 단일 getUser

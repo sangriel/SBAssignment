@@ -10,4 +10,5 @@ import Foundation
 
 enum SBError : Error {
     case userCreateFailed([(SBUser,String)])
+    case userFetchFailed(String)
 }

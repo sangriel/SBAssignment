@@ -29,7 +29,7 @@ class SBUserManagerImp : SBUserManager {
     }
     
     func createUser(params: UserCreationParams, completionHandler: ((UserResult) -> Void)?) {
-        let createUserRequest = CreateUserRequest(usercreationParam: params)
+        let createUserRequest = CreateUserAPI(usercreationParam: params)
         networkClient.request(request: createUserRequest) { [weak self] result in
             switch result {
             case .success(let response):
@@ -50,11 +50,11 @@ class SBUserManagerImp : SBUserManager {
         failedUser.append(contentsOf: exceededUserParams.map{ (ModelTransformer.createUserParamToSBUser($0),"can not create over 10 users at once") })
         
         let dispatchGroup = DispatchGroup()
-        var results : [(Result<CreateUserRequest.Response, Error>,UserCreationParams)] = []
+        var results : [(Result<CreateUserAPI.Response, Error>,UserCreationParams)] = []
         
         for param in requestingUserParams {
             dispatchGroup.enter()
-            let createUserRequest = CreateUserRequest(usercreationParam: param)
+            let createUserRequest = CreateUserAPI(usercreationParam: param)
             networkClient.request(request: createUserRequest) { result in
                 results.append((result,param))
                 dispatchGroup.leave()
@@ -84,7 +84,17 @@ class SBUserManagerImp : SBUserManager {
     }
     
     func updateUser(params: UserUpdateParams, completionHandler: ((UserResult) -> Void)?) {
-        
+        let updateUserRequest = PutUserAPI(userUpdateParam: params)
+        networkClient.request(request: updateUserRequest) { [weak self] result in
+            switch result {
+            case .success(let response):
+                let sbUser = ModelTransformer.userApiResponseToSBUser(response)
+                self?.upsertUsersAtStorage(users: [sbUser])
+                completionHandler?(.success(sbUser))
+            case .failure(let error):
+                completionHandler?(.failure(error))
+            }
+        }
     }
     
     func getUser(userId: String, completionHandler: ((UserResult) -> Void)?) {
@@ -108,6 +118,10 @@ class SBUserManagerImp : SBUserManager {
     }
     
     func getUsers(nicknameMatches: String, completionHandler: ((UsersResult) -> Void)?) {
+        guard nicknameMatches.isEmpty == false else {
+            completionHandler?(.failure(SBError.userFetchFailed("can not fetch with empty nickname")))
+            return
+        }
         let cached = userStorage.getUsers(for: nicknameMatches)
         if cached.isEmpty == false {
             completionHandler?(.success(cached))

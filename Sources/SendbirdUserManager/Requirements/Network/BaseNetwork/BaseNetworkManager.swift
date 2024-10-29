@@ -86,7 +86,6 @@ class SBBaseNetworkManager : SBNetworkClient   {
                 completionHandler(.failure(SBNetworkError.emptyResponse))
                 return
             }
-            print("\(String(data : data, encoding: .utf8) ?? "")")
             
             do {
                 let decoder = JSONDecoder()

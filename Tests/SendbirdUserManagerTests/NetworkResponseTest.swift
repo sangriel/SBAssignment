@@ -24,7 +24,7 @@ class NetworkResponseTest : XCTestCase {
         AppData.apiToken = apiToken
         AppData.appId = applicationId
         let expectation = expectation(description: "user create api test")
-        let request = CreateUserRequest(usercreationParam: .init(userId: "test1", nickname: "testNickname", profileURL: "https://picsum.photos/seed/picsum/200/300"))
+        let request = CreateUserAPI(usercreationParam: .init(userId: "test1", nickname: "testNickname", profileURL: "https://picsum.photos/seed/picsum/200/300"))
         networkClient.request(request: request) { result  in
             switch result {
             case .success(let response):
@@ -62,6 +62,27 @@ class NetworkResponseTest : XCTestCase {
         AppData.appId = applicationId
         let expectation = expectation(description: "get user list api test")
         let request = GetUserListAPI(nickname: "test1")
+        networkClient.request(request: request) { result  in
+            switch result {
+            case .success(let response):
+                dump(response)
+            case .failure(let error):
+                dump(error)
+            }
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation],timeout: 2)
+    }
+    
+    
+    func testUpdateUserAPI() {
+        AppData.apiToken = apiToken
+        AppData.appId = applicationId
+        let expectation = expectation(description: "get user list api test")
+        
+        let updateParam = UserUpdateParams(userId: "1", nickname: "update", profileURL: "dkdkdkd")
+        let request = PutUserAPI(userUpdateParam: updateParam)
         networkClient.request(request: request) { result  in
             switch result {
             case .success(let response):

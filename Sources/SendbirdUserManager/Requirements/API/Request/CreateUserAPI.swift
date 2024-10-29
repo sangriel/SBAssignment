@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct CreateUserRequest : Request {
+struct CreateUserAPI : Request {
     typealias Response = UserResponse
     
     var urlPath: String {
