@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct SBBaseNetworkManager  {
+class SBBaseNetworkManager : SBNetworkClient   {
     var baseUrl: String {
         return "https://api-\(AppData.appId).sendbird.com"
     }
@@ -70,7 +70,8 @@ struct SBBaseNetworkManager  {
         let sessionConfig = URLSessionConfiguration.default
         
         let session = URLSession(configuration: sessionConfig)
-        let task = session.dataTask(with: urlRequest) { data, response, error in
+        let task = session.dataTask(with: urlRequest) { [weak self] data, response, error in
+            guard let self = self else { return }
             DispatchQueue.main.async {
                 defer {
                     SBNetworkSchedular.shared.signalSemaphore()

@@ -13,7 +13,7 @@ class SBUserManagerImp : SBUserManager {
     
     var userStorage: any SBUserStorage
     
-    init(networkClient: any SBNetworkClient, userStorage: any SBUserStorage) {
+    init(networkClient: any SBNetworkClient = SBBaseNetworkManager(), userStorage: any SBUserStorage = SBMemoryStorage()) {
         self.networkClient = networkClient
         self.userStorage = userStorage
     }
@@ -29,7 +29,7 @@ class SBUserManagerImp : SBUserManager {
     
     func createUser(params: UserCreationParams, completionHandler: ((UserResult) -> Void)?) {
         let createUserRequest = CreateUserRequest(usercreationParam: params)
-        SBBaseNetworkManager().request(request: createUserRequest) { result in
+        networkClient.request(request: createUserRequest) { result in
             switch result {
             case .success(let response):
                 break
