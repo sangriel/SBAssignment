@@ -37,4 +37,8 @@ class SBMemoryStorage : SBUserStorage {
     func getUser(for userId: String) -> (SBUser)? {
         return users.value.first{ $0.userId == userId }
     }
+    
+    func removeAllDatas() {
+        users.mutate { $0.removeAll() }
+    }
 }

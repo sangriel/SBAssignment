@@ -22,6 +22,7 @@ class SBUserManagerImp : SBUserManager {
         let oldAppId = AppData.appId
         if oldAppId != applicationId {
             //TODO: - remove all data
+            userStorage.removeAllDatas()
         }
         AppData.appId = applicationId
         AppData.apiToken = apiToken
