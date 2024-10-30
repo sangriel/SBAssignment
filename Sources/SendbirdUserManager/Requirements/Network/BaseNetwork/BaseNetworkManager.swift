@@ -83,14 +83,11 @@ class SBBaseNetworkManager : SBNetworkClient   {
                 completionHandler(.failure(error))
                 return
             }
-            
-            
-            
+           
             guard let data = data else {
                 completionHandler(.failure(SBNetworkError.emptyResponse))
                 return
             }
-            print("\(String(data : data, encoding: .utf8) ?? "")")
             let httpResponse = response as? HTTPURLResponse
             let statusCode = httpResponse?.statusCode ?? 400
             
@@ -114,7 +111,6 @@ class SBBaseNetworkManager : SBNetworkClient   {
                     completionHandler(.failure(error))
                 }
             }
-            
         }
         SBNetworkSchedular.shared.appendTask(task)
         SBNetworkSchedular.shared.executeTask()
