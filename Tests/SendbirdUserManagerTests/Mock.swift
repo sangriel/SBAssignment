@@ -123,7 +123,11 @@ class MockUrlSessionDataTask : URLSessionDataTask {
             
             let rand = UInt32.random(in: 500_000...1000_000)
             usleep(rand)
-            completionHandler?(responseData, nil, nil)
+            let httpResponse = HTTPURLResponse(url: URL(string: "https://www.sendbird.com")!,
+                                           statusCode: 200,
+                                           httpVersion: "2",
+                                           headerFields: [:])
+            completionHandler?(responseData, httpResponse, nil)
         }
         catch(let error) {
             completionHandler?(nil,nil,error)
@@ -144,7 +148,11 @@ class MockUrlSessionDataTask : URLSessionDataTask {
             
             let rand = UInt32.random(in: 500_000...1000_000)
             usleep(rand)
-            completionHandler?(responseData, nil, nil)
+            let httpResponse = HTTPURLResponse(url: URL(string: "https://www.sendbird.com")!,
+                                           statusCode: 200,
+                                           httpVersion: "2",
+                                           headerFields: [:])
+            completionHandler?(responseData, httpResponse, nil)
         }
         catch(let error) {
             completionHandler?(nil,nil,error)
@@ -168,7 +176,11 @@ class MockUrlSessionDataTask : URLSessionDataTask {
                 
                 let rand = UInt32.random(in: 500_000...1000_000)
                 usleep(rand)
-                completionHandler?(responseData, nil, nil)
+                let httpResponse = HTTPURLResponse(url: URL(string: "https://www.sendbird.com")!,
+                                               statusCode: 200,
+                                               httpVersion: "2",
+                                               headerFields: [:])
+                completionHandler?(responseData, httpResponse, nil)
             }
             catch(let error) {
                 completionHandler?(nil,nil,error)
@@ -198,7 +210,11 @@ class MockUrlSessionDataTask : URLSessionDataTask {
         
         let rand = UInt32.random(in: 500_000...1000_000)
         usleep(rand)
-        completionHandler?(responseData, nil, nil)
+        let httpResponse = HTTPURLResponse(url: URL(string: "https://www.sendbird.com")!,
+                                       statusCode: 200,
+                                       httpVersion: "2",
+                                       headerFields: [:])
+        completionHandler?(responseData, httpResponse, nil)
     }
     
     private func mockGetUserListAPI() {
@@ -215,7 +231,11 @@ class MockUrlSessionDataTask : URLSessionDataTask {
             
             let rand = UInt32.random(in: 500_000...1000_000)
             usleep(rand)
-            completionHandler?(responseData, nil, nil)
+            let httpResponse = HTTPURLResponse(url: URL(string: "https://www.sendbird.com")!,
+                                           statusCode: 200,
+                                           httpVersion: "2",
+                                           headerFields: [:])
+            completionHandler?(responseData, httpResponse, nil)
         }
     }
     
