@@ -95,4 +95,25 @@ class NetworkResponseTest : XCTestCase {
         
         wait(for: [expectation],timeout: 2)
     }
+    
+    func testNetworkError() {
+        AppData.apiToken = ""
+        AppData.appId = applicationId
+        let expectation = expectation(description: "network error test")
+        let request = GetUserAPI(userId: "")
+        networkClient.request(request: request) { result  in
+            switch result {
+            case .success(let response):
+                dump(response)
+            case .failure(let error):
+                if let error = error as? SBNetworkError {
+                    print(error.localizedDescription)
+                }
+                dump(error)
+            }
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation],timeout: 2)
+    }
 }

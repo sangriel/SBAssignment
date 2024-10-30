@@ -75,7 +75,7 @@ class SBBaseNetworkManager : SBNetworkClient   {
             urlRequest.addValue(value, forHTTPHeaderField: key)
         }
         
-        let task = session.dataTask(with: urlRequest) { [weak self] data, response, error in
+        let task = session.dataTask(with: urlRequest) { data, response, error in
             defer {
                 SBNetworkSchedular.shared.signalSemaphore()
             }
@@ -83,19 +83,33 @@ class SBBaseNetworkManager : SBNetworkClient   {
                 completionHandler(.failure(error))
                 return
             }
-            
+           
             guard let data = data else {
                 completionHandler(.failure(SBNetworkError.emptyResponse))
                 return
             }
+            let httpResponse = response as? HTTPURLResponse
+            let statusCode = httpResponse?.statusCode ?? 400
             
-            do {
-                let decoder = JSONDecoder()
-                let result = try decoder.decode(R.Response.self, from: data)
-                completionHandler(.success(result))
+            if (200...299).contains(statusCode) == false {
+                do {
+                    let decoder = JSONDecoder()
+                    let error = try decoder.decode(BaseErrorResonse.self, from: data)
+                    completionHandler(.failure(SBNetworkError.other((message: error.message , code: error.code))))
+                }
+                catch(let error) {
+                    completionHandler(.failure(error))
+                }
             }
-            catch(let error) {
-                completionHandler(.failure(error))
+            else {
+                do {
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode(R.Response.self, from: data)
+                    completionHandler(.success(result))
+                }
+                catch(let error) {
+                    completionHandler(.failure(error))
+                }
             }
         }
         SBNetworkSchedular.shared.appendTask(task)

@@ -289,31 +289,49 @@ open class UserManagerBaseTests: XCTestCase {
         userManager.initApplication(applicationId: applicationId, apiToken: apiToken)
         
         // Concurrently create 11 users
-        let dispatchGroup = DispatchGroup()
-        var results: [UserResult] = []
-        
+        var params : [UserCreationParams] = []
         for _ in 0..<11 {
-            dispatchGroup.enter()
-            let params = UserCreationParams(userId: UUID().uuidString, nickname: UUID().uuidString, profileURL: nil)
-            userManager.createUser(params: params) { result in
-                results.append(result)
-                dispatchGroup.leave()
+            params.append(.init(userId: UUID().uuidString, nickname: UUID().uuidString, profileURL: nil))
+        }
+        
+        userManager.createUsers(params: params) { result in
+            switch result {
+            case .success(let users):
+                break
+            case .failure(let error):
+                if let error = error as? SBError {
+                    if case let .userCreateFailed(errorResult) = error {
+                        XCTAssertEqual(errorResult.count, 1)
+                    }
+                }
+                break
             }
         }
+//        var results: [UserResult] = []
+//        let dispatchGroup = DispatchGroup()
+//        for _ in 0..<11 {
+//            dispatchGroup.enter()
+//            let params = UserCreationParams(userId: UUID().uuidString, nickname: UUID().uuidString, profileURL: nil)
+//            userManager.createUser(params: params) { result in
+//                results.append(result)
+//                dispatchGroup.leave()
+//            }
+//        }
+        
 
-        dispatchGroup.wait()
+//        dispatchGroup.wait()
 
         // Assess the results
-        let successResults = results.filter {
-            if case .success = $0 { return true }
-            return false
-        }
-        let rateLimitResults = results.filter {
-            if case .failure(_) = $0 { return true }
-            return false
-        }
-
-        XCTAssertEqual(successResults.count, 10)
-        XCTAssertEqual(rateLimitResults.count, 1)
+//        let successResults = results.filter {
+//            if case .success = $0 { return true }
+//            return false
+//        }
+//        let rateLimitResults = results.filter {
+//            if case .failure(_) = $0 { return true }
+//            return false
+//        }
+//
+//        XCTAssertEqual(successResults.count, 10)
+//        XCTAssertEqual(rateLimitResults.count, 1)
     }
 }

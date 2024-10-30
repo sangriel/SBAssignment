@@ -27,19 +27,7 @@ extension Request {
     }
 }
 
-public enum SBNetworkError : Error {
-    case invalidUrl
-    case emptyResponse
-    
-    var localizedDescription: String {
-        switch self {
-        case .invalidUrl:
-            return "Invalid URL"
-        case .emptyResponse:
-            return "Empty Response"
-        }
-    }
-}
+
 
 public enum SBHttpMethod : String {
     case GET
