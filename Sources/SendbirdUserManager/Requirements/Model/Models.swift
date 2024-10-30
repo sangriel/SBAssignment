@@ -41,3 +41,4 @@ public struct SBUser {
     public var nickname: String?
     public var profileURL: String?
 }
+
